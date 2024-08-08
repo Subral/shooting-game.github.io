@@ -55,6 +55,12 @@
         }
       });
 
+      document.addEventListener('touchstart', function(event){
+        if(ballsLeft>0){
+          shootBall();
+        }
+      });
+      
       // Function to get an available ball from the pool
       function getAvailableBall() {
         for (const ball of ballPool) {
