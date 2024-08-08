@@ -5,7 +5,7 @@
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene >
         <!-- Adding animated images to the scene -->
         <a-image id="image1" src="ASSETS/icon-128.png" position="-8 1.5 -11" width="2" height="3" 
                  animation="property:position; from:8 1.5 -11; to:-8 1.5 -11; dur:2000; loop:true; easing:linear; dir:alternate;"></a-image>
@@ -26,8 +26,12 @@
         <!-- Winner or loser message display -->
         <a-text id="winnerOrLosser" value="" position="0 5 -2" color="#FFF" width="6"></a-text>
         
+        
         <!-- Camera entity with look-controls for user interaction -->
-        <a-entity camera look-controls position="0 2 5"></a-entity>
+        <a-entity camera look-controls position="0 2 5">
+          <a-cursor material="src:url(precision.png); transparent: true; opacity: 0.8; color:red"
+          geometry="primitive: plane; height: 0.1; width: 0.1"></a-cursor>
+        </a-entity>
     </a-scene>
     
     <script>
@@ -60,7 +64,7 @@
           shootBall();
         }
       });
-      
+
       // Function to get an available ball from the pool
       function getAvailableBall() {
         for (const ball of ballPool) {
