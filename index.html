@@ -1,81 +1,95 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- Importing the A-Frame library -->
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
+        <!-- Adding animated images to the scene -->
         <a-image id="image1" src="ASSETS/icon-128.png" position="-8 1.5 -11" width="2" height="3" 
-                 animation="property:position; from:8 1.5 -11 ;to:-8 1.5 -11; dur:2000; loop:true; easing:linear; dir:alternate;"></a-image>
+                 animation="property:position; from:8 1.5 -11; to:-8 1.5 -11; dur:2000; loop:true; easing:linear; dir:alternate;"></a-image>
         <a-image id="image2" src="ASSETS/icon-128.png" position="7 5 -8" width="2" height="3"
                  animation="property:position; from:7 -5 -8; to:7 5 -8; dur:4000; easing:linear; loop:true; dir:alternate;"></a-image>
         <a-image id="image3" src="ASSETS/icon-128.png" position="-7 5 -8" width="2" height="3"
                  animation="property:position; from:-7 -5 -8; to:-7 5 -8; dur:4000; easing:linear; loop:true; dir:alternate;"></a-image>
+        
+        <!-- Adding a sky background -->
         <a-sky src="ASSETS/sky.jpg"></a-sky>
 
-  
+        <!-- Score display -->
         <a-text id="score" value="Score: 0" position="-1.5 6 -2" color="#FFF" width="6"></a-text>
       
+        <!-- Balls left display -->
         <a-text id="ballsLeft" value="Balls Left: 5" position="1.5 6 -2" color="#FFF" width="6"></a-text>
+
+        <!-- Winner or loser message display -->
+        <a-text id="winnerOrLosser" value="" position="0 5 -2" color="#FFF" width="6"></a-text>
         
+        <!-- Camera entity with look-controls for user interaction -->
         <a-entity camera look-controls position="0 2 5"></a-entity>
     </a-scene>
     
     <script>
-      let score = 0;
-      let ballsLeft = 5;
+      let score = 0;  // Initial score
+      let ballsLeft = 5;  // Initial number of balls
 
-      const ballPool = [];
-      const poolSize = 5; 
+      const ballPool = [];  // Pool to store balls
+      const poolSize = 5;  // Number of balls in the pool
 
+      // Create a pool of ball elements
       for (let i = 0; i < poolSize; i++) {
         const ball = document.createElement('a-sphere');
         ball.setAttribute('radius', '0.2');
         ball.setAttribute('color', '#6c75e0');
-        ball.setAttribute('visible', 'false');
-        ball.setAttribute('dynamic-body', '');
-        ballPool.push(ball);
-        document.querySelector('a-scene').appendChild(ball);
+        ball.setAttribute('visible', 'false');  // Initially not visible
+        ball.setAttribute('dynamic-body', '');  // Makes the ball dynamic
+        ballPool.push(ball);  // Add ball to the pool
+        document.querySelector('a-scene').appendChild(ball);  // Add ball to the scene
       }
 
+      // Event listener for the space bar key press
       document.addEventListener('keydown', function(event) {
         if (event.code === 'Space' && ballsLeft > 0) {
-          shootBall();
+          shootBall();  // Call shootBall function if space bar is pressed and balls are left
         }
       });
 
+      // Function to get an available ball from the pool
       function getAvailableBall() {
         for (const ball of ballPool) {
           if (!ball.getAttribute('visible')) {
-            return ball;
+            return ball;  // Return the first non-visible ball
           }
-        }
-        return null;
+        } 
+        return null;  // Return null if no balls are available
       }
 
+      // Function to shoot a ball
       function shootBall() {
-        const ball = getAvailableBall();
+        const ball = getAvailableBall();  // Get an available ball
         if (!ball) {
           console.log('No available balls in the pool.');
           return;
         }
         
-        ball.setAttribute('position', '0 1 5');
-        ball.setAttribute('visible', 'true');
+        ball.setAttribute('position', '0 1 5');  // Set initial position of the ball
+        ball.setAttribute('visible', 'true');  // Make the ball visible
         
         const camera = document.querySelector('[camera]');
         const direction = new THREE.Vector3(0, 0, -1);
-        direction.applyQuaternion(camera.object3D.quaternion);
+        direction.applyQuaternion(camera.object3D.quaternion);  // Get the direction the camera is facing
 
-        ballsLeft--;
-        updateBallsLeft();
+        ballsLeft--;  // Decrement the number of balls left
+        updateBallsLeft();  // Update the display of balls left
 
+        // Function to move the ball
         function moveBall() {
           const currentPosition = new THREE.Vector3();
-          ball.object3D.getWorldPosition(currentPosition);
+          ball.object3D.getWorldPosition(currentPosition);  // Get the current position of the ball
           
-          currentPosition.add(direction.clone().multiplyScalar(0.4));
-          ball.setAttribute('position', currentPosition);
+          currentPosition.add(direction.clone().multiplyScalar(0.4));  // Move the ball in the direction
+          ball.setAttribute('position', currentPosition);  // Update the position of the ball
           
           // Check for collisions
           const raycaster = new THREE.Raycaster(currentPosition, direction);
@@ -85,39 +99,41 @@
             const hitObject = intersects[0].object.el;
             if (hitObject && hitObject.tagName === 'A-IMAGE') {
               console.log('Hit image:', hitObject.id);
-              hitObject.parentNode.removeChild(hitObject);
-              ball.setAttribute('visible', 'false');
-              updateScore(); // Update the score
+              hitObject.parentNode.removeChild(hitObject);  // Remove the hit image
+              ball.setAttribute('visible', 'false');  // Hide the ball
+              updateScore();  // Update the score
               return;
             }
           }
           
           // Remove ball if it goes too far
           if (currentPosition.length() > 50) {
-            ball.setAttribute('visible', 'false');
+            ball.setAttribute('visible', 'false');  // Hide the ball
             return;
           }
           
-          requestAnimationFrame(moveBall);
+          requestAnimationFrame(moveBall);  // Continue moving the ball
         }
         
-        requestAnimationFrame(moveBall);
+        requestAnimationFrame(moveBall);  // Start moving the ball
       }
 
+      // Function to update the score
       function updateScore() {
-        score++;
+        score++;  // Increment the score
         const scoreText = document.getElementById('score');
-        scoreText.setAttribute('value', 'Score: ' + score);
-        if(score == 3){
-          scoreText.setAttribute('value','You Won');
-        } else if(poolSize == 0){
-          scoreText.setAttribute('value', "You lost")
-        }
+        scoreText.setAttribute('value', 'Score: ' + score);  // Update the score display
+        if (score == 3)  // If score reaches 3
+          scoreText.setAttribute('value', 'You Won');  // Display winning message
       }
 
+      // Function to update the balls left display
       function updateBallsLeft() {
         const ballsLeftText = document.getElementById('ballsLeft');
-        ballsLeftText.setAttribute('value', 'Balls Left: ' + ballsLeft);
+        ballsLeftText.setAttribute('value', 'Balls Left: ' + ballsLeft);  // Update the balls left display
+        if (ballsLeft == 0) {
+          ballsLeftText.setAttribute('value', 'You Lost');  // Display losing message if no balls left
+        }
       }
 
       // Initialize counters
@@ -125,4 +141,3 @@
     </script>
   </body>
 </html>
- 
