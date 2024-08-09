@@ -15,7 +15,9 @@
         
         <a-sky src="ASSETS/sky.jpg"></a-sky>
 
-        <a-image id="winImage" src="win.png" position="0 10 -2" width="4" height="4" visible="false"></a-image>
+        <a-image id="winImage" src="ASSETS/win.png" position="0 10 -2" width="4" height="4" visible="false"></a-image>
+
+        <a-image id="lossImage" src="ASSETS/loss.png" position="0 10 -2" width="4" height="4" visible="false"></a-image>
 
         <a-text id="score" value="Score: 0" position="-1.5 6 -2" color="#FFF" width="6"></a-text>
       
@@ -25,7 +27,7 @@
         
       
         <a-entity camera look-controls position="0 2 10">
-          <a-cursor material="src:url(precision.png); transparent: true; opacity: 0.8; color:red"
+          <a-cursor material="src:url(ASSETS/precision.png); transparent: true; opacity: 0.8; color:red"
           geometry="primitive: plane; height: 0.1; width: 0.1"></a-cursor>
         </a-entity>
     </a-scene>
@@ -139,7 +141,7 @@
         scoreText.setAttribute('value', 'Score: ' + score);  // Update the score display
         if (score == 3){  // If score reaches 3
           scoreText.setAttribute('value', 'You Won');  // Display winning message
-          showingImage();
+          showingImageWin();
           ball.setAttribute('visible', 'false');
         }
          
@@ -151,13 +153,25 @@
         ballsLeftText.setAttribute('value', 'Balls Left: ' + ballsLeft);  // Update the balls left display
         if (ballsLeft == 0) {
           ballsLeftText.setAttribute('value', 'You Lost');  // Display losing message if no balls left
+          image1.setAttribute('visible', 'false');
+          image2.setAttribute('visible', 'false');
+          image3.setAttribute('visible', 'false');
+          showingImageLoss();
+
+
         }
       }
 
-      function showingImage() {
+      function showingImageWin() {
         const winImage = document.getElementById('winImage');
         winImage.setAttribute('visible', 'true');  // Make the winning image visible
         winImage.setAttribute('animation', 'property: position; from: 0 10 -2; to: 0 1 -2; dur: 1000; easing: easeInOutQuad;');  // Animate the image from the top to the center
+      }
+
+      function showingImageLoss() {
+        const lossImage = document.getElementById('lossImage');
+        lossImage.setAttribute('visible', 'true');  // Make the loosing image visible
+        lossImage.setAttribute('animation', 'property: position; from: 0 10 -2; to: 0 1 -2; dur: 1000; easing: easeInOutQuad;');  // Animate the image from the top to the center
       }
 
       // Initialize counters
