@@ -150,15 +150,16 @@
       // Function to update the balls left display
       function updateBallsLeft() {
         const ballsLeftText = document.getElementById('ballsLeft');
-        ballsLeftText.setAttribute('value', 'Balls Left: ' + ballsLeft);  // Update the balls left display
-        if (ballsLeft == 0) {
-          ballsLeftText.setAttribute('value', 'You Lost');  // Display losing message if no balls left
+        ballsLeftText.setAttribute('value', 'Balls Left: ' + ballsLeft);  // Update the balls left display 
+     
+        if (ballsLeft == 0 && score < 3   ) {
+          showingImageLoss();
           image1.setAttribute('visible', 'false');
           image2.setAttribute('visible', 'false');
           image3.setAttribute('visible', 'false');
-          showingImageLoss();
-
-
+          
+          ballsLeftText.setAttribute('value', 'You Lost');  // Display losing message if no balls left
+          ball.setAttribute('visible', 'false');
         }
       }
 
