@@ -156,9 +156,7 @@
   </head>
   <body>
     <a-scene>
-      <!-- Real-time camera feed applied to a sky -->
-      <a-sky id="camera-feed"></a-sky>
-
+      
       <a-image id="image1" src="ASSETS/icon-128.png" position="-8 1.5 -11" width="2" height="3" 
                animation="property:position; from:8 1.5 -11; to:-8 1.5 -11; dur:2000; loop:true; easing:linear; dir:alternate;"></a-image>
       <a-image id="image2" src="ASSETS/icon-128.png" position="7 5 -8" width="2" height="3"
@@ -170,7 +168,7 @@
       <a-text id="ballsLeft" value="Balls Left: 5" position="1.5 6 -2" color="#FFF" width="6"></a-text>
       <a-text id="winnerOrLosser" value="" position="0 5 -2" color="#FFF" width="6"></a-text>
 
-      <a-entity camera look-controls position="0 2 5">
+      <a-entity id="camera-feed" camera look-controls position="0 2 5">
         <a-cursor material="src:url(precision.png); transparent: true; opacity: 0.8; color:red"
           geometry="primitive: plane; height: 0.1; width: 0.1"></a-cursor>
       </a-entity>
