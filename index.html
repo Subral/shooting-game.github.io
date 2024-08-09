@@ -15,6 +15,8 @@
         
         <a-sky src="ASSETS/sky.jpg"></a-sky>
 
+        <a-image id="winImage" src="win.png" position="0 10 -2" width="4" height="4" visible="false"></a-image>
+
         <a-text id="score" value="Score: 0" position="-1.5 6 -2" color="#FFF" width="6"></a-text>
       
         <a-text id="ballsLeft" value="Balls Left: 5" position="1.5 6 -2" color="#FFF" width="6"></a-text>
@@ -68,66 +70,6 @@
         } 
         return null;  // Return null if no balls are available
       }
-
-      // Function to shoot a ball
-      // function shootBall() {
-      //   const ball = getAvailableBall();  // Get an available ball
-      //   if (!ball) {
-      //     console.log('No available balls in the pool.');
-      //     return;
-      //   }
-        
-      //   ball.setAttribute('position', '0 1 10');  // Set initial position of the ball
-      //   ball.setAttribute('visible', 'true');  // Make the ball visible
-        
-      //   const camera = document.querySelector('[camera]');
-      //   const direction = new THREE.Vector3(0, 0, -1);
-      //   direction.applyQuaternion(camera.object3D.quaternion);  // Get the direction the camera is facing
-
-      //   ballsLeft--;  // Decrement the number of balls left
-      //   updateBallsLeft();  // Update the display of balls left
-
-      //   let distanceTraveled = 0;  // Track the distance the ball has traveled
-      //   const minimumDistanceBeforeCollisionCheck = 1;  // Minimum distance the ball must travel before checking for collisions
-
-      //   // Function to move the ball
-      //   function moveBall() {
-      //     const currentPosition = new THREE.Vector3();
-      //     ball.object3D.getWorldPosition(currentPosition);  // Get the current position of the ball
-          
-      //     currentPosition.add(direction.clone().multiplyScalar(0.4));  // Move the ball in the direction
-      //     ball.setAttribute('position', currentPosition);  // Update the position of the ball
-          
-      //     distanceTraveled += 0.4;  // Update the distance traveled by the ball
-
-      //     // Check for collisions after the ball has traveled the minimum required distance
-      //     if (distanceTraveled > minimumDistanceBeforeCollisionCheck) {
-      //       const raycaster = new THREE.Raycaster(currentPosition, direction);
-      //       const intersects = raycaster.intersectObjects(document.querySelector('a-scene').object3D.children, true);
-
-      //       if (intersects.length > 0) {
-      //         const hitObject = intersects[0].object.el;
-      //         if (hitObject && hitObject.tagName === 'A-IMAGE') {
-      //           console.log('Hit image:', hitObject.id);
-      //           hitObject.parentNode.removeChild(hitObject);  // Remove the hit image
-      //           ball.setAttribute('visible', 'false');  // Hide the ball
-      //           updateScore();  // Update the score
-      //           return;
-      //         }
-      //       }
-      //     }
-          
-      //     // Remove ball if it goes too far
-      //     if (currentPosition.length() > 50) {
-      //       ball.setAttribute('visible', 'false');  // Hide the ball
-      //       return;
-      //     }
-          
-      //     requestAnimationFrame(moveBall);  // Continue moving the ball
-      //   }
-        
-      //   requestAnimationFrame(moveBall);  // Start moving the ball
-      // }
 
 
       function shootBall() {
@@ -195,8 +137,12 @@
         score++;  // Increment the score
         const scoreText = document.getElementById('score');
         scoreText.setAttribute('value', 'Score: ' + score);  // Update the score display
-        if (score == 3)  // If score reaches 3
+        if (score == 3){  // If score reaches 3
           scoreText.setAttribute('value', 'You Won');  // Display winning message
+          showingImage();
+          ball.setAttribute('visible', 'false');
+        }
+         
       }
 
       // Function to update the balls left display
@@ -206,6 +152,12 @@
         if (ballsLeft == 0) {
           ballsLeftText.setAttribute('value', 'You Lost');  // Display losing message if no balls left
         }
+      }
+
+      function showingImage() {
+        const winImage = document.getElementById('winImage');
+        winImage.setAttribute('visible', 'true');  // Make the winning image visible
+        winImage.setAttribute('animation', 'property: position; from: 0 10 -2; to: 0 1 -2; dur: 1000; easing: easeInOutQuad;');  // Animate the image from the top to the center
       }
 
       // Initialize counters
