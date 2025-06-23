@@ -144,10 +144,23 @@
       target.setAttribute('visible', 'true');
       activeTargets.push(target);
 
+      // Give random motion
+      const motionAxis = Math.random() > 0.5 ? 'x' : 'y';
+      const range = Math.random() * 2 + 1; // motion range
+      const from = motionAxis === 'x' ? x - range : y - range;
+      const to = motionAxis === 'x' ? x + range : y + range;
+
+      const motionProperty = `property: position; dir: alternate; loop: true; dur: ${1500 + Math.random() * 1000}; ` +
+        `from: ${motionAxis === 'x' ? from : x} ${motionAxis === 'y' ? from : y} ${z}; ` +
+        `to: ${motionAxis === 'x' ? to : x} ${motionAxis === 'y' ? to : y} ${z}`;
+
+      target.setAttribute('animation__motion', motionProperty);
+
       // Remove target after 5 seconds if not hit
       setTimeout(() => {
         if (target.getAttribute('visible')) {
           target.setAttribute('visible', 'false');
+          target.removeAttribute('animation__motion'); // stop animation
           const index = activeTargets.indexOf(target);
           if (index > -1) {
             activeTargets.splice(index, 1);
@@ -155,6 +168,7 @@
         }
       }, 5000);
     }
+
 
     function getAvailableTarget() {
       for (const target of targetPool) {
